@@ -13,7 +13,6 @@ public class CreateAccountDetailsPojo {
 	private String city;
 	private String state;
 	private String postCode;
-	private String other;
 	private String additionalInfo;
 	private String hPhone;
 	private String mNumber;
@@ -90,12 +89,6 @@ public class CreateAccountDetailsPojo {
 	}
 	public void setPostCode(String postCode) {
 		this.postCode = postCode;
-	}
-	public String getOther() {
-		return other;
-	}
-	public void setOther(String other) {
-		this.other = other;
 	}
 	public String getAdditionalInfo() {
 		return additionalInfo;

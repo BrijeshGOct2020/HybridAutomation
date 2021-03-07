@@ -1,16 +1,31 @@
 package pages;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
 import base.PredefinedActions;
+import constantPath.ConfigFilePath;
+import util.PropertyFileReader;
 
 public class MyProfilePage extends PredefinedActions {
 	
+	private PropertyFileReader prop;
+	private static MyProfilePage myProfilePage;
+	
+	private MyProfilePage() {
+		prop = new PropertyFileReader(ConfigFilePath.MYPROFILE_PAGE_PROPERTIES);
+	}
+	
+	public static MyProfilePage getInstance() {
+		if(myProfilePage == null)
+			myProfilePage = new MyProfilePage();
+		return myProfilePage;
+	}
+	
 	public String getHeaderText() {
-		WebDriverWait wait = new WebDriverWait(driver, 30);
-		String headerText = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".header_user_info span"))).getText();
-		return headerText;
+		return getElementText(prop.getValue("headerText"), true);
+	}
+	
+	public ProductCategoryPage selectCategory(String category) {
+		System.out.println("Step: Click on category '"+category+"'");
+		clickOnElement("[xpath]:-//ul/li/a[text()='"+category+"']", true);
+		return ProductCategoryPage.getInstance();
 	}
 }

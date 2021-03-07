@@ -14,12 +14,11 @@ import pages.MyProfilePage;
 import pojo.CreateAccountDetailsPojo;
 import util.ExcelOperation;
 
-public class CreateAccountTest {
+public class CreateAccountTest extends TestBase{
 
 	@Test
 	public void createAccountTest() {
-		PredefinedActions.start();
-		HomePage homePage = new HomePage();
+		HomePage homePage = HomePage.getInstance();
 		AuthenticationPage authenticationPage = homePage.clickOnSignIn();
 		authenticationPage.validatePageHeading();
 		authenticationPage.enterEmailAdress("automation19783849@gmail.com");
@@ -57,8 +56,7 @@ public class CreateAccountTest {
 			String password, String day, String month, String year, String company, String address, String city,
 			String state, String postCode, String additionalInfo, String hPhone, String mNumber,
 			String aliasAddress) {
-		PredefinedActions.start();
-		HomePage homePage = new HomePage();
+		HomePage homePage = HomePage.getInstance();
 		AuthenticationPage authenticationPage = homePage.clickOnSignIn();
 		authenticationPage.validatePageHeading();
 		authenticationPage.enterEmailAdress(email);
@@ -91,9 +89,58 @@ public class CreateAccountTest {
 		String expected = firstName+" "+lastName;
 		Assert.assertEquals(actual, expected, "Verification of headertext failed");
 	}
+	
+	@Test(dataProvider = "Create Account Pojo")
+	public void createAccountTestDynamicDataPojo(CreateAccountDetailsPojo createAccountDetailsPojo) {
+		HomePage homePage = HomePage.getInstance();
+		AuthenticationPage authenticationPage = homePage.clickOnSignIn();
+		authenticationPage.validatePageHeading();
+		authenticationPage.enterEmailAdress(createAccountDetailsPojo.getEmail());
+		CreateAccountPage createAccountPage = authenticationPage.clickOnCreateAccount();
+		createAccountPage.validatePageHeading();
+
+		System.out.println("Navigate to create account page");
+		createAccountPage.enterCreateAccountDetails(createAccountDetailsPojo);
+
+		MyProfilePage myProfilePage = createAccountPage.clickOnRegistration();
+		String actual = myProfilePage.getHeaderText();
+		String expected = createAccountDetailsPojo.getFirstName()+" "+createAccountDetailsPojo.getLastName();
+		Assert.assertEquals(actual, expected, "Verification of headertext failed");
+	}
+
 
 	@DataProvider(name = "Create Account")
 	public String[][] createAccount() throws IOException {
 		return ExcelOperation.getExcelData("TestData.xlsx", "CreateAccount");
+	}
+	
+	@DataProvider(name = "Create Account Pojo")
+	public Object[][] createAccountPojo() throws IOException {
+		String[][] data = ExcelOperation.getExcelData("TestData.xlsx", "CreateAccount");
+		Object[][] obj = new Object[data.length][1];
+		for(int index = 0; index < data.length; index++) {
+			String[] row = data[index];
+			CreateAccountDetailsPojo  createAccountDetailsPojo = new CreateAccountDetailsPojo();
+			createAccountDetailsPojo.setEmail(row[0]);
+			boolean genderFlag = row[1].equalsIgnoreCase("m") ? true : false;
+			createAccountDetailsPojo.setMale(genderFlag);
+			createAccountDetailsPojo.setFirstName(row[2]);
+			createAccountDetailsPojo.setLastName(row[3]);
+			createAccountDetailsPojo.setPassword(row[4]);
+			createAccountDetailsPojo.setDay(row[5]);
+			createAccountDetailsPojo.setMonth(row[6]);
+			createAccountDetailsPojo.setYear(row[7]);
+			createAccountDetailsPojo.setCompany(row[8]);
+			createAccountDetailsPojo.setAddress1(row[9]);
+			createAccountDetailsPojo.setCity(row[10]);
+			createAccountDetailsPojo.setState(row[11]);
+			createAccountDetailsPojo.setPostCode(row[12]);
+			createAccountDetailsPojo.setAdditionalInfo(row[13]);
+			createAccountDetailsPojo.sethPhone(row[14]);
+			createAccountDetailsPojo.setmNumber(row[15]);
+			createAccountDetailsPojo.setAliasAddress(row[16]);
+			obj[index][0] = createAccountDetailsPojo;
+		}
+		return obj;
 	}
 }

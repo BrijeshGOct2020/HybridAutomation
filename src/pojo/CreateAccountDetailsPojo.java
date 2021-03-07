@@ -2,6 +2,7 @@ package pojo;
 
 public class CreateAccountDetailsPojo {
 	private boolean isMale;
+	private String email;
 	private String firstName;
 	private String lastName;
 	private String password;
@@ -18,6 +19,12 @@ public class CreateAccountDetailsPojo {
 	private String mNumber;
 	private String aliasAddress;
 	
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
 	public boolean isMale() {
 		return isMale;
 	}

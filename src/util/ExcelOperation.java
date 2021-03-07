@@ -38,6 +38,7 @@ public class ExcelOperation {
 			}
 			System.out.println();
 		}
+		wb.close();
 		return data;
 	}
 }

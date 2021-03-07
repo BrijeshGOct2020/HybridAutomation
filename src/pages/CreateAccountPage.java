@@ -1,107 +1,111 @@
 package pages;
 
 import org.junit.Assert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
 import base.PredefinedActions;
+import constantPath.ConfigFilePath;
 import pojo.CreateAccountDetailsPojo;
+import util.PropertyFileReader;
 
 public class CreateAccountPage extends PredefinedActions{
-	WebDriverWait wait = new WebDriverWait(driver,30);
+	
+	private PropertyFileReader prop;
+	private static CreateAccountPage createAccountPage;
+	
+	private CreateAccountPage() {
+		prop = new PropertyFileReader(ConfigFilePath.CREATEACCOUNT_PAGE_PROPERTIES);
+	}
+	
+	public static CreateAccountPage getInstance() {
+		if(createAccountPage == null)
+			createAccountPage = new CreateAccountPage();
+		return createAccountPage;
+	}
 	
 	public void validatePageHeading() {
 		System.out.println("Step: Validate CreateAccount page title");
-		Assert.assertTrue(wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h1[text()='Create an account']"))).isDisplayed());
+		Assert.assertTrue(isElementDisplayed(prop.getValue("pageTitle"), true));
 	}
 	
 	private void selectTitle(boolean isMale) {
-		WebElement titleElement;
 		System.out.println("Step: Select title");
-		titleElement = isMale ? wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("id_gender1")))
-														 : wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("id_gender2")));
-		wait.until(ExpectedConditions.elementToBeClickable(titleElement)).click();
+		if(isMale)
+			clickOnElement(prop.getValue("genderMale"), true);
+		else
+			clickOnElement(prop.getValue("genderFemale"), true);
 	}
 	
 	private void enterFirstName(String firstName) {
 		System.out.println("Step: Enter First Name");
-		driver.findElement(By.id("customer_firstname")).sendKeys(firstName);
+		enterText(prop.getValue("firstName"), firstName, true);
 	}
 	
 	private void enterLastName(String lastName) {
 		System.out.println("Step: Enter Last Name");
-		driver.findElement(By.id("customer_lastname")).sendKeys(lastName);
+		enterText(prop.getValue("lastName"), lastName, true);
 	}
 	
 	private void enterPassword(String password) {
 		System.out.println("Step: Enter Password");
-		driver.findElement(By.id("passwd")).sendKeys(password);
+		enterText(prop.getValue("password"), password, true);
 	}
 	
 	private void selectDay(String day) {
 		System.out.println("Step: Select day");
-		wait.until(ExpectedConditions.visibilityOfElementLocated((By.id("uniform-days")))).click();
-		Select s = new Select(driver.findElement(By.id("days")));
-		s.selectByValue(day);
+		clickOnElement(prop.getValue("dayDropdown"), true);
+		selectValueFromDropdownByValue(prop.getValue("days"), day, false);
 	}
 	
 	private void selectMonth(String month) {
 		System.out.println("Step: Select month");
-		wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("uniform-months"))).click();
-		Select s = new Select(driver.findElement(By.id("months")));
-		s.selectByValue(month);
+		clickOnElement(prop.getValue("monthDropdown"), true);
+		selectValueFromDropdownByValue(prop.getValue("months"), month, false);
 	}
 	
 	private void selectYear(String year) {
 		System.out.println("Step: Select year");
-		wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("uniform-years"))).click();
-		Select s = new Select(driver.findElement(By.id("years")));
-		s.selectByValue(year);
+		clickOnElement(prop.getValue("yearDropdown"), true);
+		selectValueFromDropdownByValue(prop.getValue("years"), year, false);
 	}
 	
 	private void enterCompanyName(String company) {
 		System.out.println("Step: Enter Company Name");
-		wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("company"))).sendKeys(company);
+		enterText(prop.getValue("company"), company, false);
 	}
 	
 	private void enterAddress(String address) {
 		System.out.println("Step: Enter Address Name");
-		wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("address1"))).sendKeys(address);
+		enterText(prop.getValue("address"), address, false);
 	}
 	
 	private void enterCity(String city) {
 		System.out.println("Step: Enter City Name");
-		wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("city"))).sendKeys(city);
+		enterText(prop.getValue("city"), city, false);
 	}
 	
 	private void selectState(String state) {
 		System.out.println("Step: Select State");
-		wait.until(ExpectedConditions.visibilityOfElementLocated((By.id("uniform-id_state")))).click();
-		Select s = new Select(driver.findElement(By.id("id_state")));
-		s.selectByVisibleText(state);
+		clickOnElement(prop.getValue("stateDropdown"), false);
+		selectValueFromDropdownByVisibleText(prop.getValue("state"), state, false);
 	}
 	
 	private void enterPostCode(String postCode) {
 		System.out.println("Step: Enter Postcode");
-		wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("postcode"))).sendKeys(postCode);
+		enterText(prop.getValue("postCode"), postCode, false);
 	}
 	
 	private void additionalInfo(String additionalInfo) {
 		System.out.println("Step: Enter additional information");
-		wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("other"))).sendKeys(additionalInfo);
+		enterText(prop.getValue("additionalInfo"), additionalInfo, false);
 	}
 	
 	private void enterHomePhoneNumber(String hPhone) {
 		System.out.println("Step: Enter Home mobile number");
-		wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("phone"))).sendKeys(hPhone);
+		enterText(prop.getValue("homePhone"), hPhone, false);
 	}
 	
 	private void enterMobilePhone(String mNumber) {
 		System.out.println("Step: Enter Mobile number");
-		wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("phone_mobile"))).sendKeys(mNumber);
+		enterText(prop.getValue("mobileNumber"), mNumber, false);
 	}
 	
 	public void enterCreateAccountDetails(CreateAccountDetailsPojo createAccountDetailsPojo) {
@@ -122,9 +126,8 @@ public class CreateAccountPage extends PredefinedActions{
 	}
 	
 	public MyProfilePage clickOnRegistration() {
-		wait = new WebDriverWait(driver,30);
-		wait.until(ExpectedConditions.elementToBeClickable(By.id("submitAccount"))).click();
+		clickOnElement(prop.getValue("registrationButton"), false);
 		System.out.println("Details Registered in Application");
-		return new MyProfilePage();
+		return MyProfilePage.getInstance();
 	}
 }

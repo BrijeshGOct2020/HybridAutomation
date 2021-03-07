@@ -1,0 +1,1 @@
+java -cp ".\\libs\\*;.\\libs\\TestNG\\*;.\\bin\\" org.testng.TestNG  testng.xml

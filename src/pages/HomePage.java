@@ -1,19 +1,26 @@
 package pages;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
 import base.PredefinedActions;
+import constantPath.ConfigFilePath;
+import util.PropertyFileReader;
 
 public class HomePage extends PredefinedActions{
+	private PropertyFileReader prop;
+	private static HomePage homePage;
+	
+	private HomePage() {
+		prop = new PropertyFileReader(ConfigFilePath.HOME_PAGE_PROPERTIES);
+	}
+	
+	public static HomePage getInstance() {
+		if(homePage == null)
+			homePage = new HomePage();
+		return homePage;
+	}
 	
 	public AuthenticationPage clickOnSignIn() {
 		System.out.println("Step: Click on sign in");
-		WebDriverWait wait = new WebDriverWait(driver, 30);
-		WebElement signInElement = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".header_user_info>a")));
-		signInElement.click();
-		return new AuthenticationPage();
+		clickOnElement(prop.getValue("signInButton"),true);
+		return AuthenticationPage.getInstance();
 	}
 }

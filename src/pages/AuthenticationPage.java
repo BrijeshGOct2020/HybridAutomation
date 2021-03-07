@@ -1,27 +1,64 @@
 package pages;
 
 import org.junit.Assert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
 import base.PredefinedActions;
+import constantPath.ConfigFilePath;
+import util.PropertyFileReader;
 
 public class AuthenticationPage extends PredefinedActions {
-	WebDriverWait wait = new WebDriverWait(driver, 30);
+	private PropertyFileReader prop;
+	private static AuthenticationPage authenticationPage;
+	
+	private AuthenticationPage() {
+		prop = new PropertyFileReader(ConfigFilePath.AUTHENTICATION_PAGE_PROPERTIES);
+	}
+	
+	public static AuthenticationPage getInstance() {
+		if(authenticationPage == null)
+			authenticationPage = new AuthenticationPage();
+		return authenticationPage;
+	}
+	
 	public void validatePageHeading() {
 		System.out.println("Step: Validate Authentication page title");
-		Assert.assertTrue(wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h1[text()='Authentication']"))).isDisplayed());
+		Assert.assertTrue(isElementDisplayed(prop.getValue("authenticationPageTitle"), true));
 	}
 	
 	public void enterEmailAdress(String emailId) {
 		System.out.println("Step: Enter email address for the create user name");
-		wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("email_create"))).sendKeys(emailId);
+		enterText(prop.getValue("createAccountEmail"),emailId, true);
 	}
 
 	public CreateAccountPage clickOnCreateAccount() {
 		System.out.println("Step: Click on the submit button to fill the other details");
-		wait.until(ExpectedConditions.elementToBeClickable(By.id("SubmitCreate"))).click();
-		return new CreateAccountPage();
+		clickOnElement(prop.getValue("createAccountSubmit"), true);
+		return CreateAccountPage.getInstance();
+	}
+	
+	public MyProfilePage signIn(String email, String password) {
+		enterEmailSignIn(email);
+		enterPassword(password);
+		return clickOnSignInButton();
+	}
+	
+	public void enterEmailSignIn(String email) {
+		System.out.println("Step: Enter email in SignIn box");
+		enterText(prop.getValue("signInEmail"), email, true);
+	}
+	
+	public void enterPassword(String password) {
+		System.out.println("Step: Enter password in SignIn box");
+		enterText(prop.getValue("signInPassword"), password, true);
+	}
+	
+	public MyProfilePage clickOnSignInButton() {
+		System.out.println("Step: Sign in button");
+		clickOnElement(prop.getValue("signInSubmit"), true);
+		return MyProfilePage.getInstance();
+	}
+	
+	public String getAlertErrorText() {
+		System.out.println("Step: Get alert");
+		return getElementText(prop.getValue("alertError"),true);
 	}
 }
